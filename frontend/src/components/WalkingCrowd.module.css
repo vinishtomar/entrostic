@@ -1,0 +1,217 @@
+/* Holographic people walking across a neon grid into a portal. Pure CSS, no JS. */
+
+.scene {
+  position: relative;
+  height: 420px;
+  overflow: hidden;
+  background:
+    radial-gradient(70% 60% at 86% 62%, rgb(56 189 248 / 0.16), transparent 70%),
+    radial-gradient(60% 50% at 20% 0%, rgb(79 70 229 / 0.35), transparent 70%),
+    linear-gradient(#030617, #070b24 60%, #0a0f2e);
+  isolation: isolate;
+}
+@media (max-width: 640px) {
+  .scene { height: 340px; }
+}
+
+/* Twinkling starfield */
+.stars,
+.stars::after {
+  position: absolute;
+  inset: 0 0 45% 0;
+  background-image:
+    radial-gradient(1.2px 1.2px at 8% 20%, #fff, transparent),
+    radial-gradient(1px 1px at 22% 58%, #c7d2fe, transparent),
+    radial-gradient(1.4px 1.4px at 35% 12%, #fff, transparent),
+    radial-gradient(1px 1px at 48% 40%, #a5b4fc, transparent),
+    radial-gradient(1.2px 1.2px at 61% 18%, #fff, transparent),
+    radial-gradient(1px 1px at 73% 52%, #bae6fd, transparent),
+    radial-gradient(1.5px 1.5px at 92% 14%, #fff, transparent),
+    radial-gradient(1px 1px at 15% 82%, #c7d2fe, transparent),
+    radial-gradient(1px 1px at 55% 75%, #fff, transparent);
+  opacity: 0.8;
+  animation: twinkle 4s ease-in-out infinite alternate;
+}
+.stars::after {
+  content: "";
+  inset: 0;
+  transform: translate(37px, 23px);
+  animation-delay: -2s;
+}
+@keyframes twinkle { from { opacity: 0.35; } to { opacity: 0.9; } }
+
+/* Perspective neon floor */
+.floor {
+  position: absolute;
+  left: -50%;
+  right: -50%;
+  bottom: -2px;
+  height: 58%;
+  background-image:
+    linear-gradient(rgb(99 102 241 / 0.55) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(56 189 248 / 0.35) 1px, transparent 1px);
+  background-size: 64px 64px;
+  transform: perspective(380px) rotateX(62deg);
+  transform-origin: 50% 100%;
+  mask-image: linear-gradient(to top, black 30%, transparent 95%);
+  animation: floor-scroll 3s linear infinite;
+}
+@keyframes floor-scroll { to { background-position: -64px 0, -64px 0; } }
+
+.horizon {
+  position: absolute;
+  inset: auto 0 58% 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgb(129 140 248 / 0.9), rgb(56 189 248 / 0.9), transparent);
+  box-shadow: 0 0 24px 4px rgb(99 102 241 / 0.45);
+}
+
+/* Portal the crowd walks into */
+.portal {
+  position: absolute;
+  left: 86%;
+  bottom: 10%;
+  width: 120px;
+  height: 230px;
+  translate: -50% 0;
+  border-radius: 999px;
+  border: 2px solid rgb(125 211 252 / 0.9);
+  background: radial-gradient(closest-side, rgb(56 189 248 / 0.35), rgb(79 70 229 / 0.12) 70%, transparent);
+  box-shadow:
+    0 0 30px 6px rgb(56 189 248 / 0.45),
+    inset 0 0 40px 8px rgb(99 102 241 / 0.45);
+  animation: portal-pulse 3.2s ease-in-out infinite;
+}
+.portal::after {
+  content: "";
+  position: absolute;
+  inset: 14px;
+  border-radius: inherit;
+  border: 1px dashed rgb(199 210 254 / 0.5);
+  animation: ring 3.2s ease-in-out infinite;
+}
+@keyframes portal-pulse {
+  50% { box-shadow: 0 0 46px 12px rgb(56 189 248 / 0.6), inset 0 0 56px 14px rgb(99 102 241 / 0.6); }
+}
+@keyframes ring { 50% { opacity: 0.35; scale: 0.94; } }
+
+.portalMark {
+  position: absolute;
+  left: 86%;
+  bottom: calc(10% + 244px);
+  translate: -50% 0;
+  filter: drop-shadow(0 0 12px rgb(56 189 248 / 0.8));
+  animation: float 4s ease-in-out infinite;
+}
+@keyframes float { 50% { translate: -50% -6px; } }
+
+@media (max-width: 640px) {
+  .portal { width: 84px; height: 168px; }
+  /* No room above the smaller portal on phones; it would overlap the headline */
+  .portalMark { display: none; }
+}
+
+/* ---- Walkers ---- */
+
+.walker {
+  position: absolute;
+  left: -8%;
+  height: var(--h);
+  aspect-ratio: 40 / 100;
+  color: var(--tint);
+  filter: drop-shadow(0 0 6px var(--glow));
+  opacity: 0;
+  animation: travel var(--travel) linear infinite;
+  animation-delay: var(--delay);
+  will-change: left, opacity;
+}
+@media (max-width: 640px) {
+  .walker { height: calc(var(--h) * 0.72); }
+}
+/* Fade in from the left, fade out entering the portal */
+@keyframes travel {
+  0% { left: -8%; opacity: 0; }
+  6% { opacity: var(--alpha); }
+  88% { opacity: var(--alpha); }
+  100% { left: 86%; opacity: 0; }
+}
+
+/* Floor shadow under each walker */
+.walker::after {
+  content: "";
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  bottom: -4px;
+  height: 6px;
+  border-radius: 50%;
+  background: radial-gradient(var(--glow), transparent 70%);
+  opacity: 0.7;
+}
+
+.figure {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  stroke: currentColor;
+  stroke-linecap: round;
+  fill: none;
+}
+.figure * { transform-box: view-box; }
+
+.body { animation: bob calc(var(--cycle) / 2) ease-in-out infinite; }
+@keyframes bob { 50% { translate: 0 -2px; } }
+
+.back { opacity: 0.45; }
+
+.thigh { transform-origin: 20px 52px; animation: thigh var(--cycle) ease-in-out infinite; }
+.shin { transform-origin: 20px 74px; animation: shin var(--cycle) ease-in-out infinite; }
+.arm { transform-origin: 20px 22px; animation: arm var(--cycle) ease-in-out infinite; }
+/* The far-side limbs run half a stride out of phase */
+.back .thigh,
+.back .shin,
+.back.arm,
+.back .arm { animation-delay: calc(var(--cycle) / -2); }
+
+/* Walking right: a negative rotation swings a limb forward */
+@keyframes thigh { 0%, 100% { rotate: -26deg; } 50% { rotate: 24deg; } }
+@keyframes shin { 0%, 100% { rotate: 4deg; } 50% { rotate: 10deg; } 72% { rotate: 58deg; } }
+@keyframes arm { 0%, 100% { rotate: 22deg; } 50% { rotate: -22deg; } }
+
+.cv { fill: rgb(186 230 253 / 0.25); stroke-width: 1.2; }
+
+/* Holographic scanline sweeping over the figures */
+.scan {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(transparent 0 46%, rgb(125 211 252 / 0.08) 50%, transparent 54%);
+  background-size: 100% 240%;
+  animation: scan 6s linear infinite;
+  pointer-events: none;
+}
+@keyframes scan { from { background-position: 0 100%; } to { background-position: 0 -140%; } }
+
+.caption {
+  position: absolute;
+  top: 36px;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  padding-inline: 16px;
+  text-align: center;
+  color: #e0e7ff;
+}
+
+/* Reduced motion: freeze everything mid-stride, all walkers visible (overrides the global rule). */
+@media (prefers-reduced-motion: reduce) {
+  .scene *,
+  .scene *::before,
+  .scene *::after {
+    animation: none !important;
+  }
+  .walker {
+    opacity: var(--alpha);
+    left: var(--rest);
+  }
+}

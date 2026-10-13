@@ -3,6 +3,7 @@
 import { motion } from "motion/react";
 import { ArrowRight, FileSearch, Kanban, Link2, ShieldCheck } from "lucide-react";
 import { Avatar, ButtonLink, Logo, fadeUp, stagger } from "@/components/ui";
+import WalkingCrowd from "@/components/WalkingCrowd";
 
 const FEATURES = [
   { icon: Link2, title: "One link, everywhere", body: "Every job gets a clean, shareable page. Post it on LinkedIn, job boards, or your own site." },
@@ -104,6 +105,8 @@ export default function Landing() {
           </motion.div>
         </div>
       </section>
+
+      <WalkingCrowd />
 
       <section className="border-t border-slate-100 bg-slate-50/60">
         <motion.div
