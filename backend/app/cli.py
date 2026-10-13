@@ -44,7 +44,11 @@ def bootstrap() -> None:
     if not email or not password:
         return
     if len(password) < MIN_PASSWORD_LENGTH:
-        sys.exit(f"INITIAL_ADMIN_PASSWORD must be at least {MIN_PASSWORD_LENGTH} characters.")
+        # Report and carry on: this runs before the web server in the start command,
+        # and a bad bootstrap value must never keep the whole app from starting.
+        print(f"bootstrap: ERROR INITIAL_ADMIN_PASSWORD must be at least {MIN_PASSWORD_LENGTH} characters; "
+              "no admin created.", file=sys.stderr)
+        return
     with SessionLocal() as db:
         if db.scalar(select(User.id).where(User.email == email)):
             print(f"bootstrap: {email} already exists; nothing to do (you can remove INITIAL_ADMIN_* now).")
