@@ -56,8 +56,8 @@ export default function SignupPage() {
         </div>
         <Field label="Your name"><Input required autoComplete="name" value={form.full_name} onChange={set("full_name")} /></Field>
         <Field label="Work email"><Input required type="email" autoComplete="email" value={form.email} onChange={set("email")} /></Field>
-        <Field label="Password" hint="At least 10 characters.">
-          <Input required type="password" minLength={10} autoComplete="new-password" value={form.password} onChange={set("password")} />
+        <Field label="Password" hint="At least 8 characters.">
+          <Input required type="password" minLength={8} autoComplete="new-password" value={form.password} onChange={set("password")} />
         </Field>
         <AnimatePresence>{error && <Alert>{error}</Alert>}</AnimatePresence>
         <Button type="submit" size="lg" loading={busy} className="w-full">Request access</Button>

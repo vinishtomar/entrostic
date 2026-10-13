@@ -9,7 +9,7 @@ _hasher = PasswordHasher()  # Argon2id with library-recommended parameters
 # Verified against when the email doesn't exist, so login timing doesn't reveal which emails are registered.
 _DUMMY_HASH = _hasher.hash("timing-equaliser-not-a-real-password")
 
-MIN_PASSWORD_LENGTH = 10
+MIN_PASSWORD_LENGTH = 8
 
 
 def hash_password(password: str) -> str:
